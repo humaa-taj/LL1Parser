@@ -1,0 +1,134 @@
+
+================================================================================
+  Parsing String #1: "id + * id"
+================================================================================
+  Step  | Stack (bottom->top)            | Input Remaining           | Action
+  ---------------------------------------------------------------------------------------------------------
+  1     | $ Expr                         | id + * id $               | Expr -> Term ExprPrime
+  2     | $ ExprPrime Term               | id + * id $               | Term -> Factor TermPrime
+  3     | $ ExprPrime TermPrime Factor   | id + * id $               | Factor -> id
+  4     | $ ExprPrime TermPrime id       | id + * id $               | Match 'id'
+  5     | $ ExprPrime TermPrime          | + * id $                  | TermPrime -> epsilon
+  6     | $ ExprPrime                    | + * id $                  | ExprPrime -> + Term ExprPrime
+  7     | $ ExprPrime Term +             | + * id $                  | Match '+'
+  8     | $ ExprPrime Term               | * id $                    | ERROR [Line 1, Col 3]: No production for [Term, *]  Expected one of: { +, $, ) }
+  *** ERROR [Line 1, Col 3, Step 8] No production for non-terminal 'Term' with lookahead '*' in parsing table.  Expected one of: { +, $, ) }.
+    [Recovery] Initiating panic-mode recovery...
+    [Recovery] Sync set: { $, ), + }
+    [Recovery] Skipping unexpected token '*'
+    [Recovery] Skipping unexpected token 'id'
+    [Recovery] Resuming at token '$'
+    [Recovery] Sync point found: NT 'Term' has '$' in FOLLOW. Popped 0 symbol(s) from stack.
+  9     | $ ExprPrime Term               | $                         | ERROR [Line 1, Col 5]: No production for [Term, $]  Expected one of: { +, $, ) }
+  *** ERROR [Line 1, Col 5, Step 9] No production for non-terminal 'Term' with lookahead '$' in parsing table.  Expected one of: { +, $, ) }.
+    [Recovery] Initiating panic-mode recovery...
+    [Recovery] Sync set: { $, ), + }
+    [Recovery] Force-popping stuck NT 'Term' (no progress otherwise).
+  10    | $ ExprPrime                    | $                         | ExprPrime -> epsilon
+  11    | $                              | $                         | Accept
+  Result: Parsing completed with 2 error(s).
+    - [Line 1, Col 3, Step 8] No production for non-terminal 'Term' with lookahead '*' in parsing table.  Expected one of: { +, $, ) }.
+    - [Line 1, Col 5, Step 9] No production for non-terminal 'Term' with lookahead '$' in parsing table.  Expected one of: { +, $, ) }.
+
+
+================================================================================
+  Parsing String #2: "( id + id"
+================================================================================
+  Step  | Stack (bottom->top)            | Input Remaining           | Action
+  ---------------------------------------------------------------------------------------------------------
+  1     | $ Expr                         | ( id + id $               | Expr -> Term ExprPrime
+  2     | $ ExprPrime Term               | ( id + id $               | Term -> Factor TermPrime
+  3     | $ ExprPrime TermPrime Factor   | ( id + id $               | Factor -> ( Expr )
+  4     | ...prPrime TermPrime ) Expr (  | ( id + id $               | Match '('
+  5     | $ ExprPrime TermPrime ) Expr   | id + id $                 | Expr -> Term ExprPrime
+  6     | ...TermPrime ) ExprPrime Term  | id + id $                 | Term -> Factor TermPrime
+  7     | ...ExprPrime TermPrime Factor  | id + id $                 | Factor -> id
+  8     | ...e ) ExprPrime TermPrime id  | id + id $                 | Match 'id'
+  9     | ...rime ) ExprPrime TermPrime  | + id $                    | TermPrime -> epsilon
+  10    | ...rime TermPrime ) ExprPrime  | + id $                    | ExprPrime -> + Term ExprPrime
+  11    | ...rmPrime ) ExprPrime Term +  | + id $                    | Match '+'
+  12    | ...TermPrime ) ExprPrime Term  | id $                      | Term -> Factor TermPrime
+  13    | ...ExprPrime TermPrime Factor  | id $                      | Factor -> id
+  14    | ...e ) ExprPrime TermPrime id  | id $                      | Match 'id'
+  15    | ...rime ) ExprPrime TermPrime  | $                         | TermPrime -> epsilon
+  16    | ...rime TermPrime ) ExprPrime  | $                         | ExprPrime -> epsilon
+  17    | $ ExprPrime TermPrime )        | $                         | ERROR [Line 2, Col 5]: Premature end of input. Expected: ')'  Found: '$'
+  *** ERROR [Line 2, Col 5, Step 17] Premature end of input.  Expected: ')'  Found: '$' (end of input).
+  18    | $ ExprPrime TermPrime          | $                         | TermPrime -> epsilon
+  19    | $ ExprPrime                    | $                         | ExprPrime -> epsilon
+  20    | $                              | $                         | Accept
+  Result: Parsing completed with 1 error(s).
+    - [Line 2, Col 5, Step 17] Premature end of input.  Expected: ')'  Found: '$' (end of input).
+
+
+================================================================================
+  Parsing String #3: "id id"
+================================================================================
+  Step  | Stack (bottom->top)            | Input Remaining           | Action
+  ---------------------------------------------------------------------------------------------------------
+  1     | $ Expr                         | id id $                   | Expr -> Term ExprPrime
+  2     | $ ExprPrime Term               | id id $                   | Term -> Factor TermPrime
+  3     | $ ExprPrime TermPrime Factor   | id id $                   | Factor -> id
+  4     | $ ExprPrime TermPrime id       | id id $                   | Match 'id'
+  5     | $ ExprPrime TermPrime          | id $                      | ERROR [Line 3, Col 2]: No production for [TermPrime, id]  Expected one of: { +, $, ) }
+  *** ERROR [Line 3, Col 2, Step 5] No production for non-terminal 'TermPrime' with lookahead 'id' in parsing table.  Expected one of: { +, $, ) }.
+    [Recovery] Initiating panic-mode recovery...
+    [Recovery] Sync set: { $, ), + }
+    [Recovery] Skipping unexpected token 'id'
+    [Recovery] Resuming at token '$'
+    [Recovery] Sync point found: NT 'TermPrime' has '$' in FOLLOW. Popped 0 symbol(s) from stack.
+  6     | $ ExprPrime TermPrime          | $                         | TermPrime -> epsilon
+  7     | $ ExprPrime                    | $                         | ExprPrime -> epsilon
+  8     | $                              | $                         | Accept
+  Result: Parsing completed with 1 error(s).
+    - [Line 3, Col 2, Step 5] No production for non-terminal 'TermPrime' with lookahead 'id' in parsing table.  Expected one of: { +, $, ) }.
+
+
+================================================================================
+  Parsing String #4: "+ id"
+================================================================================
+  Step  | Stack (bottom->top)            | Input Remaining           | Action
+  ---------------------------------------------------------------------------------------------------------
+  1     | $ Expr                         | + id $                    | ERROR [Line 4, Col 1]: No production for [Expr, +]  Expected one of: { $, ) }
+  *** ERROR [Line 4, Col 1, Step 1] No production for non-terminal 'Expr' with lookahead '+' in parsing table.  Expected one of: { $, ) }.
+    [Recovery] Initiating panic-mode recovery...
+    [Recovery] Sync set: { $, ) }
+    [Recovery] Skipping unexpected token '+'
+    [Recovery] Skipping unexpected token 'id'
+    [Recovery] Resuming at token '$'
+    [Recovery] Sync point found: NT 'Expr' has '$' in FOLLOW. Popped 0 symbol(s) from stack.
+  2     | $ Expr                         | $                         | ERROR [Line 4, Col 3]: No production for [Expr, $]  Expected one of: { $, ) }
+  *** ERROR [Line 4, Col 3, Step 2] No production for non-terminal 'Expr' with lookahead '$' in parsing table.  Expected one of: { $, ) }.
+    [Recovery] Initiating panic-mode recovery...
+    [Recovery] Sync set: { $, ) }
+    [Recovery] Force-popping stuck NT 'Expr' (no progress otherwise).
+  3     | $                              | $                         | Accept
+  Result: Parsing completed with 2 error(s).
+    - [Line 4, Col 1, Step 1] No production for non-terminal 'Expr' with lookahead '+' in parsing table.  Expected one of: { $, ) }.
+    - [Line 4, Col 3, Step 2] No production for non-terminal 'Expr' with lookahead '$' in parsing table.  Expected one of: { $, ) }.
+
+
+================================================================================
+  Parsing String #5: "* id *"
+================================================================================
+  Step  | Stack (bottom->top)            | Input Remaining           | Action
+  ---------------------------------------------------------------------------------------------------------
+  1     | $ Expr                         | * id * $                  | ERROR [Line 5, Col 1]: No production for [Expr, *]  Expected one of: { $, ) }
+  *** ERROR [Line 5, Col 1, Step 1] No production for non-terminal 'Expr' with lookahead '*' in parsing table.  Expected one of: { $, ) }.
+    [Recovery] Initiating panic-mode recovery...
+    [Recovery] Sync set: { $, ) }
+    [Recovery] Skipping unexpected token '*'
+    [Recovery] Skipping unexpected token 'id'
+    [Recovery] Skipping unexpected token '*'
+    [Recovery] Resuming at token '$'
+    [Recovery] Sync point found: NT 'Expr' has '$' in FOLLOW. Popped 0 symbol(s) from stack.
+  2     | $ Expr                         | $                         | ERROR [Line 5, Col 4]: No production for [Expr, $]  Expected one of: { $, ) }
+  *** ERROR [Line 5, Col 4, Step 2] No production for non-terminal 'Expr' with lookahead '$' in parsing table.  Expected one of: { $, ) }.
+    [Recovery] Initiating panic-mode recovery...
+    [Recovery] Sync set: { $, ) }
+    [Recovery] Force-popping stuck NT 'Expr' (no progress otherwise).
+  3     | $                              | $                         | Accept
+  Result: Parsing completed with 2 error(s).
+    - [Line 5, Col 1, Step 1] No production for non-terminal 'Expr' with lookahead '*' in parsing table.  Expected one of: { $, ) }.
+    - [Line 5, Col 4, Step 2] No production for non-terminal 'Expr' with lookahead '$' in parsing table.  Expected one of: { $, ) }.
+

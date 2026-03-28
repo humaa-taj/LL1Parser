@@ -1,0 +1,8 @@
+TRANSFORMED GRAMMAR (after LF + LRR)
+============================================================
+Expr                 -> Term ExprPrime
+Term                 -> Factor TermPrime
+Factor               -> ( Expr ) | id
+ExprPrime            -> + Term ExprPrime | epsilon
+TermPrime            -> * Factor TermPrime | epsilon
+============================================================

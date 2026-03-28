@@ -1,0 +1,17 @@
+
+================================================================================
+  Parsing String #1: "id + * id"
+================================================================================
+  Step  | Stack (bottom->top)            | Input Remaining           | Action
+  ----------------------------------------------------------------------------------------------------
+  1     | $ Expr                         | id + * id $               | Expr -> Term ExprPrime
+  2     | $ ExprPrime Term               | id + * id $               | Term -> Factor TermPrime
+  3     | $ ExprPrime TermPrime Factor   | id + * id $               | Factor -> id
+  4     | $ ExprPrime TermPrime id       | id + * id $               | Match 'id'
+  5     | $ ExprPrime TermPrime          | + * id $                  | TermPrime -> epsilon
+  6     | $ ExprPrime                    | + * id $                  | ExprPrime -> + Term ExprPrime
+  7     | $ ExprPrime Term +             | + * id $                  | Match '+'
+  8     | $ ExprPrime Term               | * id $                    | ERROR: no production for [Term, *]
+  ----------------------------------------------------------------------------------------------------
+  Result: Parsing completed with 1 error(s).
+    - No production for [Term, *] in parsing table.
