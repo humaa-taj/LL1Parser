@@ -1,6 +1,6 @@
 # CS4031 - Compiler Construction | Assignment 02
 ## LL(1) Parser — Spring 2026
-**Roll Numbers:** 23i0743 | 23i0623 | **Section:** A | **Language:** Java
+**Roll Numbers:** 23i0743 | 23i0623 | **Section:** E | **Language:** Java
 
 ## Compilation
     mkdir -p out
